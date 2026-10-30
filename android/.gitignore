@@ -1,0 +1,9 @@
+.gradle/
+build/
+local.properties
+*.iml
+.idea/
+.kotlin/
+# Android Studio's signed-build output and profiler captures.
+app/release/
+captures/

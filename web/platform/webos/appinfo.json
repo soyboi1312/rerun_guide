@@ -1,0 +1,17 @@
+{
+  "id": "com.rerunguide.app",
+  "version": "1.0.3",
+  "vendor": "Rerun Guide",
+  "type": "web",
+  "main": "index.html",
+  "title": "Rerun Guide",
+  "appDescription": "Your Plex, Emby or Jellyfin library as a retro TV guide",
+  "icon": "icon.png",
+  "largeIcon": "largeIcon.png",
+  "splashBackground": "splash.png",
+  "iconColor": "#14110f",
+  "resolution": "1920x1080",
+  "disableBackHistoryAPI": true,
+  "handlesRelaunch": false,
+  "requiredACG": []
+}

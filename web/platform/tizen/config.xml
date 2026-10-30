@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The package id is 10 characters and, with the application id, must never change after the first store upload. -->
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:tizen="http://tizen.org/ns/widgets"
+        id="http://rerunguide.app/tizen" version="1.0.3" viewmodes="maximized">
+  <tizen:application id="rerunguide.RerunGuide" package="rerunguide" required_version="5.5"/>
+  <tizen:profile name="tv-samsung"/>
+  <content src="index.html"/>
+  <icon src="icon.png"/>
+  <!-- Must match the default-language title in Seller Office, or the pre-test fails. -->
+  <name>Rerun Guide</name>
+  <feature name="http://tizen.org/feature/screen.size.all"/>
+  <!-- Servers are on the viewer's LAN or anywhere on the internet, so no fixed allow-list. -->
+  <access origin="*" subdomains="true"/>
+  <tizen:privilege name="http://tizen.org/privilege/internet"/>
+  <tizen:privilege name="http://tizen.org/privilege/tv.inputdevice"/>
+  <tizen:setting screen-orientation="landscape" context-menu="disable" background-support="disable"
+                 encryption="disable" install-location="auto" hwkey-event="enable"/>
+</widget>

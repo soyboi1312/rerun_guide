@@ -1,0 +1,56 @@
+/* The page shell. Chromium 68 is the floor (webOS 5): no flexbox gap (use margins), inset, aspect-ratio, :is/:where/:has,
+   min()/max()/clamp(), backdrop-filter, conic-gradient or two-position colour stops. */
+
+/* The bundled fonts (App/Fonts, copied to fonts/ by build.mjs), one family per typeface as in Theme.kt's Fonts. */
+@font-face { font-family: 'Bricolage Grotesque'; font-weight: 500; font-display: block; src: url(fonts/BricolageGrotesque-Medium.ttf) format('truetype'); }
+@font-face { font-family: 'Bricolage Grotesque'; font-weight: 600; font-display: block; src: url(fonts/BricolageGrotesque-SemiBold.ttf) format('truetype'); }
+@font-face { font-family: 'Bricolage Grotesque'; font-weight: 700; font-display: block; src: url(fonts/BricolageGrotesque-Bold.ttf) format('truetype'); }
+
+@font-face { font-family: 'Hanken Grotesk'; font-weight: 400; font-display: block; src: url(fonts/HankenGrotesk-Regular.ttf) format('truetype'); }
+@font-face { font-family: 'Hanken Grotesk'; font-weight: 500; font-display: block; src: url(fonts/HankenGrotesk-Medium.ttf) format('truetype'); }
+@font-face { font-family: 'Hanken Grotesk'; font-weight: 600; font-display: block; src: url(fonts/HankenGrotesk-SemiBold.ttf) format('truetype'); }
+@font-face { font-family: 'Hanken Grotesk'; font-weight: 700; font-display: block; src: url(fonts/HankenGrotesk-Bold.ttf) format('truetype'); }
+@font-face { font-family: 'Hanken Grotesk'; font-weight: 800; font-display: block; src: url(fonts/HankenGrotesk-ExtraBold.ttf) format('truetype'); }
+
+/* Barlow Condensed ships 500–800 only: its 400 is the Medium file. */
+@font-face { font-family: 'Barlow Condensed'; font-weight: 400; font-display: block; src: url(fonts/BarlowCondensed-Medium.ttf) format('truetype'); }
+@font-face { font-family: 'Barlow Condensed'; font-weight: 500; font-display: block; src: url(fonts/BarlowCondensed-Medium.ttf) format('truetype'); }
+@font-face { font-family: 'Barlow Condensed'; font-weight: 600; font-display: block; src: url(fonts/BarlowCondensed-SemiBold.ttf) format('truetype'); }
+@font-face { font-family: 'Barlow Condensed'; font-weight: 700; font-display: block; src: url(fonts/BarlowCondensed-Bold.ttf) format('truetype'); }
+@font-face { font-family: 'Barlow Condensed'; font-weight: 800; font-display: block; src: url(fonts/BarlowCondensed-ExtraBold.ttf) format('truetype'); }
+@font-face { font-family: 'Barlow Condensed'; font-weight: 800; font-style: italic; font-display: block; src: url(fonts/BarlowCondensed-ExtraBoldItalic.ttf) format('truetype'); }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: #000;
+  color: #fff;
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* The LG pointer over a button that has no focus state of its own (Platform.ts sets .lg-pointer while the pointer shows;
+   buttons that do have one take the remote's focus instead, through onPoint). */
+.lg-pointer .hov:hover { outline: 4px solid var(--hov, #f2e9dd); outline-offset: 6px; }
+
+/* One line, cut with an ellipsis (BasicText maxLines = 1). */
+.ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* At most two lines (maxLines = 2); Para takes any count through its maxLines. */
+.clamp2 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+
+/* Spinner.kt: one turn a second, linear, forever. */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 1s linear infinite; }
+
+/* Enter and exit fades (`useExit` keeps an exiting element mounted with .out while it fades). */
+@keyframes fadeIn { from { opacity: 0; } }
+@keyframes fadeOut { to { opacity: 0; } }
+
+/* The player's own captions stay hidden: subtitles are drawn by WatchScreen's `Subtitles` (Emby/Jellyfin text) or burned in
+   (Plex, image subtitles). A stream's default subtitle rendition (the sample station's has one) would otherwise show on every video. */
+video::cue { visibility: hidden; }

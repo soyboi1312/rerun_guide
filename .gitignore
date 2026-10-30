@@ -1,0 +1,30 @@
+.DS_Store
+.build/
+DerivedData/
+xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+.swiftpm/
+*.xcodeproj/
+Design/
+
+# Secrets and signing material never belong here (the Play upload key lives outside the repo; see README).
+.env
+*.env
+*.jks
+*.keystore
+*.p12
+*.p8
+*.pem
+*.mobileprovision
+# Build products and heap dumps (a dump of the running app holds its sign-in tokens).
+*.apk
+*.aab
+*.ipa
+*.xcarchive/
+*.dSYM/
+*.hprof
+# Web app: dependencies, build products, and the local test seed (it holds a server token).
+web/node_modules/
+web/dist/
+web/.test-build/
+web/seed.json

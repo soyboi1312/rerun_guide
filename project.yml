@@ -1,0 +1,129 @@
+name: RerunGuide
+options:
+  bundleIdPrefix: com.rerunguide
+  # The project's LastUpgradeCheck. Xcode's "Update to recommended settings" is applied in the settings below instead of
+  # by clicking it in Xcode, which a regenerate would undo.
+  xcodeVersion: "27.1"
+  deploymentTarget:
+    tvOS: "17.0"
+    iOS: "17.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    MARKETING_VERSION: "1.0.3"
+    CURRENT_PROJECT_VERSION: "1"
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: 49B9T69XPF
+    # Xcode 27.1's recommended settings.
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: YES
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+    DEAD_CODE_STRIPPING: YES
+    IBC_COCOATOUCH_COMPILER_MODE: toolchain
+packages:
+  RerunGuideCore:
+    path: Core
+targets:
+  RerunGuide:
+    type: application
+    platform: tvOS
+    sources:
+      - path: App
+        excludes: [Portrait]   # the iPhone and iPad layouts held upright
+    dependencies:
+      - package: RerunGuideCore
+    settings:
+      base:
+        ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME: ""   # xcodegen's tvOS preset names a launch image set (deprecated since tvOS 13)
+    info:
+      path: App/Info.plist
+      properties:
+        UILaunchStoryboardName: LaunchScreen   # Apple TV only: the iOS target generates its launch screen
+        <<: &appInfo
+          CFBundleDisplayName: Rerun Guide
+          # Both apps take their version from the top-level settings: bump MARKETING_VERSION / CURRENT_PROJECT_VERSION there.
+          CFBundleShortVersionString: $(MARKETING_VERSION)
+          CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+          UIAppFonts:
+            - BricolageGrotesque-Bold.ttf
+            - BricolageGrotesque-Medium.ttf
+            - BricolageGrotesque-SemiBold.ttf
+            - HankenGrotesk-Bold.ttf
+            - HankenGrotesk-ExtraBold.ttf
+            - HankenGrotesk-Medium.ttf
+            - HankenGrotesk-Regular.ttf
+            - HankenGrotesk-SemiBold.ttf
+            - BarlowCondensed-Medium.ttf
+            - BarlowCondensed-SemiBold.ttf
+            - BarlowCondensed-Bold.ttf
+            - BarlowCondensed-ExtraBold.ttf
+            - BarlowCondensed-ExtraBoldItalic.ttf
+          NSLocalNetworkUsageDescription: Finds Plex, Jellyfin and Emby servers on your network.
+          ITSAppUsesNonExemptEncryption: false   # only the OS's own HTTPS and Keychain
+          # ponytail: local Plex/Emby/Jellyfin servers are plain http; tighten to NSAllowsLocalNetworking if you drop remote-http support
+          NSAppTransportSecurity:
+            NSAllowsArbitraryLoads: true
+  # iPhone, iPad and Mac (Mac Catalyst): the same App/ sources, Info.plist and bundle ID (universal purchase). The
+  # 1920×1080 stage is scaled to fit the window; Touch.swift maps taps, drags, keys and the scroll wheel to remote presses.
+  RerunGuide-iOS:
+    type: application
+    platform: iOS
+    supportedDestinations: [iOS, macCatalyst]
+    sources:
+      - path: App
+        excludes: [Info.plist, LaunchScreen.storyboard]   # the tvOS target's plist and launch screen; this target's plist is RerunGuide-iOS/Info.plist
+    dependencies:
+      - package: RerunGuideCore
+    info:
+      path: RerunGuide-iOS/Info.plist
+      properties:
+        <<: *appInfo
+        # One window: every screen renders the one AppModel, so a second window would be a second player on the same state.
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        # Picture in picture: Home while a stream plays keeps it going in a corner window (WatchScreen's PlayerUIView).
+        UIBackgroundModes: [audio]
+    settings:
+      base:
+        PRODUCT_NAME: RerunGuide
+        PRODUCT_BUNDLE_IDENTIFIER: com.rerunguide.RerunGuide
+        DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER: NO
+        TARGETED_DEVICE_FAMILY: "1,2,6"   # 6 = Mac Catalyst "Optimize for Mac"
+        # The plist above (the tvOS keys: fonts, ATS, local network) plus these iOS-only keys, merged by Xcode.
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UIUserInterfaceStyle: Dark
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.entertainment
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight   # portrait only on screens with a portrait layout (OrientationLock)
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+        "ENABLE_HARDENED_RUNTIME[sdk=macosx*]": YES   # Mac Catalyst: Xcode recommends it for macOS apps
+        "CODE_SIGN_ENTITLEMENTS[sdk=macosx*]": RerunGuide-iOS/Mac.entitlements   # sandbox, outgoing + incoming (LAN discovery replies), keychain
+  RerunGuideUITests:
+    type: bundle.ui-testing
+    platform: tvOS
+    sources: [UITests]
+    dependencies:
+      - target: RerunGuide
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES   # a signed test bundle needs one (device runs)
+schemes:
+  RerunGuide:
+    build:
+      targets:
+        RerunGuide: all
+        RerunGuideUITests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets: [RerunGuideUITests]
+  RerunGuide-iOS:
+    build:
+      targets:
+        RerunGuide-iOS: all
+    run:
+      config: Debug

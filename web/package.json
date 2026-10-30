@@ -1,0 +1,22 @@
+{
+  "name": "rerun-guide-web",
+  "private": true,
+  "scripts": {
+    "build": "node build.mjs build",
+    "dev": "node build.mjs dev",
+    "test": "node build.mjs test",
+    "typecheck": "tsc --noEmit -p .",
+    "package:webos": "npm run build && ares-package -n dist/webos -o dist",
+    "package:tizen": "npm run build && node tools/package-tizen.mjs"
+  },
+  "dependencies": {
+    "preact": "10.29.8"
+  },
+  "devDependencies": {
+    "@types/node": "20.19.43",
+    "@webos-tools/cli": "3.2.6",
+    "esbuild": "0.28.2",
+    "hls.js": "1.7.3",
+    "typescript": "5.9.3"
+  }
+}
